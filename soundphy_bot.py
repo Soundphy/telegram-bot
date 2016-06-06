@@ -14,6 +14,7 @@ bot.
 Standard template
 """
 import telegram
+import requests
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 
@@ -39,6 +40,11 @@ def sound(bot, update):
     bot.sendVoice(update.message.chat_id,
     voice='http://www.instantsfun.es/audio/yeahhh.mp3')
 
+def reverse(bot, update):
+    query = update.message.text
+    rp = requests.get('https://soundphy-peque.rhcloud.com/v0.1/reverse?query='+query)
+    bot.sendMessage(update.message.chat_id, text=rp.json()['reverse'])
+
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
@@ -58,8 +64,8 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
-    # on noncommand i.e message - send Sound
-    dp.add_handler(MessageHandler([Filters.text], sound))
+    # on noncommand i.e message
+    dp.add_handler(MessageHandler([Filters.text], reverse))
 
     # log all errors
     dp.add_error_handler(error)

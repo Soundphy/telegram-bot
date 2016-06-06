@@ -17,8 +17,13 @@ bot.
 '''
     results.append(InlineQueryResultAudio(id=uuid4(),
                                           audio_url='http://www.instantsfun.es/audio/yeahhh.mp3',
-                                          title='Audio',
-                                          input_message_content=InputTextMessageContent(
+                                          title='Yeah',
+                                          input_message_content=
+                                          InputTextMessageContent(
+                                                'Yeah')))
+    results.append(InlineQueryResultArticle(id=uuid4(),
+                                            title="Caps",
+                                            input_message_content=InputTextMessageContent(
                                                 query.upper())))
 '''
 """
@@ -27,7 +32,7 @@ from uuid import uuid4
 import re
 
 from telegram import InlineQueryResultArticle, ParseMode, \
-    InputTextMessageContent
+    InputTextMessageContent, InlineQueryResultAudio, InlineQueryResultVoice
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 import logging
 
@@ -57,13 +62,17 @@ def escape_markdown(text):
 def inlinequery(bot, update):
     query = update.inline_query.query
     results = list()
-    results.append(InlineQueryResultArticle(id=uuid4(),
-                                            title="Caps",
-                                            input_message_content=InputTextMessageContent(
-                                                query.upper())))
+    results.append(InlineQueryResultVoice(id=uuid4(),
+                                          voice_url='http://www.instantsfun.es/audio/acdc.ogg',
+                                          title='yuju',
+                                          voice_duration = 30
+                                          ))
 
+    results.append(InlineQueryResultAudio(id=uuid4(),
+                                          audio_url='http://www.instantsfun.es/audio/yeahhh.mp3',
+                                          title='yeah'
+                                          ))
     bot.answerInlineQuery(update.inline_query.id, results=results)
-
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
