@@ -1,10 +1,15 @@
 from flask import Flask
+from multiprocessing import Process
+from SoundphyBot import main
+
 
 application = Flask('SoundphyBot')
 
 @application.route("/")
 def hello():
     return "Hello World"
+
+p = Process(target=main)
 
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server
