@@ -30,7 +30,7 @@ bot.
 from uuid import uuid4
 
 import re
-
+import requests
 from telegram import InlineQueryResultArticle, ParseMode, \
     InputTextMessageContent, InlineQueryResultAudio, InlineQueryResultVoice
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
@@ -52,26 +52,17 @@ def start(bot, update):
 def help(bot, update):
     bot.sendMessage(update.message.chat_id, text='Help!')
 
-
-def escape_markdown(text):
-    """Helper function to escape telegram markup symbols"""
-    escape_chars = '\*_`\['
-    return re.sub(r'([%s])' % escape_chars, r'\\\1', text)
-
-
 def inlinequery(bot, update):
-    query = update.inline_query.query
+    query = update.inline_query.query.strip()
+    if not query:
+        return
+    response = requests.get('https://soundphy-peque.rhcloud.com/v0/search/' + query)
+    data = response.json()['results']
     results = list()
-    results.append(InlineQueryResultVoice(id=uuid4(),
-                                          voice_url='http://www.instantsfun.es/audio/acdc.ogg',
-                                          title='yuju',
-                                          voice_duration = 30
-                                          ))
-
-    results.append(InlineQueryResultAudio(id=uuid4(),
-                                          audio_url='http://www.instantsfun.es/audio/yeahhh.mp3',
-                                          title='yeah'
-                                          ))
+    for item in data:
+        results.append(InlineQueryResultAudio(id=uuid4(),
+                                          audio_url=item['url'],
+                                          title=item['description']))
     #Development cache time 0
     bot.answerInlineQuery(update.inline_query.id, results=results,
     cache_time=0)
