@@ -10,6 +10,7 @@ def hello():
     return "Hello World"
 
 p = Process(target=main)
+p.start()
 
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server

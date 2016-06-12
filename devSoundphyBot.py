@@ -72,6 +72,7 @@ def inlinequery(bot, update):
                                           audio_url='http://www.instantsfun.es/audio/yeahhh.mp3',
                                           title='yeah'
                                           ))
+    #Development cache time 0
     bot.answerInlineQuery(update.inline_query.id, results=results,
     cache_time=0)
 
@@ -81,7 +82,7 @@ def error(bot, update, error):
 
 def main():
     # Read the bot TOKEN
-    with open('.tokenInline', 'r') as f:
+    with open('.tokenInlineDev', 'r') as f:
         token = f.read().rstrip()
 
     # Create the Updater and pass it your bot's token.
@@ -100,7 +101,8 @@ def main():
     # log all errors
     dp.add_error_handler(error)
 
-    # Start the Bot
+    # Start the Bot. Clean old pending updates on Telegram
+    # servers before starting to poll.
     updater.start_polling(clean=True)
 
     # Block until the user presses Ctrl-C or the process receives SIGINT,
