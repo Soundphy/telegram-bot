@@ -1,9 +1,9 @@
 from flask import Flask
 from multiprocessing import Process
-from SoundphyBot import main
+from soundphy_bot import main
 
 
-application = Flask('SoundphyBot')
+application = Flask('soundphy_bot')
 
 @application.route("/")
 def hello():
