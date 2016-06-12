@@ -74,7 +74,7 @@ def error(bot, update, error):
 
 def main():
     # Read the bot TOKEN
-    token = '222041805:AAEIIdZCxl0bO6vqS3M7BmPLtawptubwB90'
+    token = '222041805:AAGiJzBAGO1npx1yavCJc77ihv7t5dcnnRg'
 
     # Create the Updater and pass it your bot's token.
     updater = Updater(token)
