@@ -9,7 +9,8 @@ application = Flask('SoundphyBot')
 def hello():
     return "Hello World"
 
-p = Process(target=main)
+token = '222041805:AAGiJzBAGO1npx1yavCJc77ihv7t5dcnnRg'
+p = Process(target=main, args=(token,))
 p.start()
 
 if __name__ == '__main__':

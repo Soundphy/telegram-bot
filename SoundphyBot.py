@@ -72,10 +72,7 @@ def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 
-def main():
-    # Read the bot TOKEN
-    token = '222041805:AAGiJzBAGO1npx1yavCJc77ihv7t5dcnnRg'
-
+def main(token):
     # Create the Updater and pass it your bot's token.
     updater = Updater(token)
 
@@ -102,4 +99,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    token = '237469803:AAFKvSEsk3nF3-hz6JXm7yD0qnQrtAAF61E'
+    main(token)
