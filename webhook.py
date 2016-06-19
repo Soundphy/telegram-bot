@@ -24,7 +24,7 @@ dp.add_handler(InlineQueryHandler(inlinequery))
 dp.add_handler(ChosenInlineResultHandler(collectfeedback))
 dp.add_error_handler(error)
 
-@app.route('/HOOK', methods=['POST'])
+@app.route('/' + TOKEN, methods=['POST'])
 def webhook_handler():
     if request.method == "POST":
         try:
@@ -41,7 +41,7 @@ def webhook_handler():
 @app.route('/set_webhook', methods=['GET', 'POST'])
 def set_webhook():
     s = bot.setWebhook('https://' + os.environ['OPENSHIFT_APP_DNS']
-    + '/HOOK')
+    + '/' + TOKEN)
     if s:
         return "webhook setup ok"
     else:
