@@ -9,7 +9,9 @@ from core import helpbot, inlinequery, error, collectfeedback
 
 app = Flask(__name__)
 
-TOKEN='237469803:AAFKvSEsk3nF3-hz6JXm7yD0qnQrtAAF61E'
+TOKEN_PATH = os.path.join(os.environ.get('OPENSHIFT_DATA_DIR'), 'token')
+with open(TOKEN_PATH, 'r') as f:
+    TOKEN = f.read().strip()
 bot = telegram.Bot(token= TOKEN)
 
 # Create telegram.ext/dispatcher to manage incoming requests.
