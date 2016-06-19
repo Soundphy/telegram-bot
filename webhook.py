@@ -2,37 +2,37 @@ import os
 import traceback
 import pickle
 import telegram
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, ChosenInlineResultHandler
+from telegram.ext import CommandHandler, InlineQueryHandler
 from flask import Flask, request
-from core import start
+from core import helpbot, inlinequery, error, collectfeedback
 
-app = Flask('__name__')
+app = Flask(__name__)
 
-TOKEN='230669572:AAGgkxuJsfrLvftBVfYYIVV1m8d610DZoQw'
+TOKEN='237469803:AAFKvSEsk3nF3-hz6JXm7yD0qnQrtAAF61E'
 bot = telegram.Bot(token= TOKEN)
-# Create the Updater and pass it your bot's token.
+
+# Create telegram.ext/dispatcher to manage incoming requests.
+# Once an update is handled, all further handlers are ignored.
+# The order defines priority.
 updater = Updater(TOKEN)
-
-# Get the dispatcher to register handlers
 dp = updater.dispatcher
-
-# on different commands - answer in Telegram
-dp.add_handler(CommandHandler("start", start))
+dp.add_handler(CommandHandler("help", helpbot))
+dp.add_handler(InlineQueryHandler(inlinequery))
+dp.add_handler(ChosenInlineResultHandler(collectfeedback))
+dp.add_error_handler(error)
 
 @app.route('/HOOK', methods=['POST'])
 def webhook_handler():
     if request.method == "POST":
         try:
-#            chat_id = update.message.chat.id
-#            text = update.message.text
-#            bot.sendMessage(chat_id=chat_id, text=text)
             getdata = request.get_json(force=True)
             update = telegram.Update.de_json(getdata)
             dp.processUpdate(update)
             fout = os.path.join(os.path.dirname(__file__), 'dump.pkl')
-            pickle.dump(update.message.text, open(fout, 'wb'))
+            pickle.dump(getdata, open(fout, 'wb'))
         except Exception as error:
-            return str(update.message.text) + '\n' + traceback.format_exc()
+            return traceback.format_exc()
 
     return 'ok'
 
@@ -44,6 +44,13 @@ def set_webhook():
     else:
         return "webhook setup failed"
 
+@app.route('/remove_webhook', methods=['GET', 'POST'])
+def remove_webhook():
+    s = bot.setWebhook('')
+    if s:
+        return "webhook removed ok"
+    else:
+        return "webhook removed failed"
 
 @app.route('/')
 def index():

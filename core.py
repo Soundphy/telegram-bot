@@ -15,14 +15,10 @@ Basic inline bot example. Applies different text transformations.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
-from uuid import uuid4
-
 import re
-
 import requests
-
+import os
 from telegram import InlineQueryResultAudio
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 import logging
 
 # Enable logging
@@ -32,13 +28,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-# Define a few command handlers. These usually take the two arguments bot and
-# update. Error handlers also receive the raised TelegramError object in error.
-def start(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Hi!')
-
-
-def help(bot, update):
+# Define handlers.
+def helpbot(bot, update):
     bot.sendMessage(update.message.chat_id, text='Help!')
 
 def inlinequery(bot, update):
@@ -49,44 +40,18 @@ def inlinequery(bot, update):
     data = response.json()['results']
     results = list()
     for item in data:
-        results.append(InlineQueryResultAudio(id=uuid4(),
+        results.append(InlineQueryResultAudio(id=item['identifier'],
                                           audio_url=item['url'],
-                                          title=item['description']))
+                                          title=item['title']))
     bot.answerInlineQuery(update.inline_query.id, results=results,
     cache_time=0)
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
-
-def main(token):
-    # Create the Updater and pass it your bot's token.
-    updater = Updater(token)
-
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
-
-    # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(InlineQueryHandler(inlinequery))
-
-    # log all errors
-    dp.add_error_handler(error)
-
-    # Start the Bot
-    updater.start_webhook(clean=True,
-    webhook_url='https://soundphybot-cuacuak.rhcloud.com/'+ token)
-
-    # Block until the user presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
-
-
-if __name__ == '__main__':
-    token = '237469803:AAFKvSEsk3nF3-hz6JXm7yD0qnQrtAAF61E'
-    main(token)
-
+def collectfeedback(bot, update):
+    chosen_query = update.chosen_inline_result.query.strip()
+    identifier = update.chosen_inline_result.result_id.strip()
+    fout = os.path.join(os.path.dirname(__file__), 'collectfeed.csv')
+    with open(fout, 'a') as f:
+        f.write(identifier + ',' + chosen_query + '\n')
