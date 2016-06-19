@@ -36,6 +36,6 @@ def collectfeedback(bot, update):
     chosen_query = update.chosen_inline_result.query.strip()
     result_id = update.chosen_inline_result.result_id.strip()
     user_id = update.chosen_inline_result.from_user.id
-    fout = os.path.join(os.path.dirname(__file__), 'collectfeed.csv')
+    fout = os.path.join(os.environ.get('OPENSHIFT_DATA_DIR'), 'collectfeed.csv')
     with open(fout, 'a') as f:
-        f.write(result_id + ',' + user_id + ',' + chosen_query + '\n')
+        f.write(result_id + ',' + str(user_id) + ',' + chosen_query + '\n')
