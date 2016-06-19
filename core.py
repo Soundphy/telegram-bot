@@ -1,20 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-# Simple Bot to reply to Telegram messages
-# This program is dedicated to the public domain under the CC0 license.
-"""
-This Bot uses the Updater class to handle the bot.
-
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and runs until we press Ctrl-C on the command line.
-
-Usage:
-Basic inline bot example. Applies different text transformations.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
 import re
 import requests
 import os
@@ -51,7 +34,8 @@ def error(bot, update, error):
 
 def collectfeedback(bot, update):
     chosen_query = update.chosen_inline_result.query.strip()
-    identifier = update.chosen_inline_result.result_id.strip()
+    result_id = update.chosen_inline_result.result_id.strip()
+    user_id = update.chosen_inline_result.from_user.id
     fout = os.path.join(os.path.dirname(__file__), 'collectfeed.csv')
     with open(fout, 'a') as f:
-        f.write(identifier + ',' + chosen_query + '\n')
+        f.write(result_id + ',' + user_id + ',' + chosen_query + '\n')
