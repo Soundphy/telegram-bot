@@ -40,7 +40,8 @@ def webhook_handler():
 
 @app.route('/set_webhook', methods=['GET', 'POST'])
 def set_webhook():
-    s = bot.setWebhook('https://devsoundphybot-cuacuak.rhcloud.com/HOOK')
+    s = bot.setWebhook('https://' + os.environ['OPENSHIFT_APP_DNS']
+    + '/HOOK')
     if s:
         return "webhook setup ok"
     else:
