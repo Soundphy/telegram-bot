@@ -6,8 +6,10 @@ import logging
 from datetime import datetime
 
 # Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+logging.basicConfig(
+    filename=os.path.join(os.path.dirname(__file__), 'core.log'),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
