@@ -1,9 +1,12 @@
-import re
+"""
+Core functions.
+"""
 import requests
 import os
 from telegram import InlineQueryResultAudio
 import logging
 from datetime import datetime
+
 
 # Enable logging
 logging.basicConfig(
@@ -18,31 +21,35 @@ logger = logging.getLogger(__name__)
 def helpbot(bot, update):
     bot.sendMessage(update.message.chat_id, text='Help!')
 
+
 def inlinequery(bot, update):
     query = update.inline_query.query.strip()
     if not query:
         return
-    response = requests.get('https://soundphy-peque.rhcloud.com/v0/search/' + query)
+    response = requests.get(
+        'https://soundphy-peque.rhcloud.com/v0/search/' + query)
     data = response.json()['results']
     # Make sure all IDs are unique
     data = list(dict((x['identifier'], x) for x in data).values())
-    results = list()
-    for item in data:
-        results.append(InlineQueryResultAudio(id=item['identifier'],
-                                          audio_url=item['url'],
-                                          title=item['title'].rstrip('\\')))
+    results = [InlineQueryResultAudio(id=item['identifier'],
+                                      audio_url=item['url'],
+                                      title=item['title'].rstrip('\\'))
+               for item in data]
     bot.answerInlineQuery(update.inline_query.id, results=results,
-    cache_time=0)
+                          cache_time=0)
+
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
+
 
 def collectfeedback(bot, update):
     chosen_query = update.chosen_inline_result.query.strip()
     result_id = update.chosen_inline_result.result_id.strip()
     user_id = update.chosen_inline_result.from_user.id
     date_time = str(datetime.utcnow())
-    fout = os.path.join(os.environ.get('OPENSHIFT_DATA_DIR'), 'collectfeed.csv')
+    fout = os.path.join(os.environ.get('OPENSHIFT_DATA_DIR'),
+                        'collectfeed.csv')
     with open(fout, 'a') as f:
-        f.write(date_time + ',' + result_id + ',' + str(user_id)
-        + ',' + chosen_query + '\n')
+        f.write(date_time + ',' + result_id + ',' + str(user_id) +
+                ',' + chosen_query + '\n')
