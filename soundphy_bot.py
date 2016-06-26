@@ -37,8 +37,9 @@ def echo(bot, update):
     bot.sendMessage(update.message.chat_id, text=update.message.text)
 
 def sound(bot, update):
-    bot.sendVoice(update.message.chat_id,
-    voice='http://www.instantsfun.es/audio/yeahhh.mp3')
+    bot.sendAudio(update.message.chat_id,
+        audio='http://www.instantsfun.es/audio/yeahhh.mp3',
+        title='test\\')
 
 def reverse(bot, update):
     query = update.message.text
@@ -65,7 +66,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
 
     # on noncommand i.e message
-    dp.add_handler(MessageHandler([Filters.text], reverse))
+    dp.add_handler(MessageHandler([Filters.text], sound))
 
     # log all errors
     dp.add_error_handler(error)
