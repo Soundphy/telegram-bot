@@ -28,7 +28,7 @@ def inlinequery(bot, update):
     for item in data:
         results.append(InlineQueryResultAudio(id=item['identifier'],
                                           audio_url=item['url'],
-                                          title=item['title']))
+                                          title=item['title'].rstrip('\\')))
     bot.answerInlineQuery(update.inline_query.id, results=results,
     cache_time=0)
 
