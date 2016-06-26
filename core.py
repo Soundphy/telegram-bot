@@ -24,6 +24,8 @@ def inlinequery(bot, update):
         return
     response = requests.get('https://soundphy-peque.rhcloud.com/v0/search/' + query)
     data = response.json()['results']
+    # Make sure all IDs are unique
+    data = list(dict((x['identifier'], x) for x in data).values())
     results = list()
     for item in data:
         results.append(InlineQueryResultAudio(id=item['identifier'],
