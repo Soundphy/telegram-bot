@@ -55,6 +55,7 @@ def inlinequery(bot, update):
         data = list(dict((x['identifier'], x) for x in data).values())
         results = [InlineQueryResultAudio(id=item['identifier'],
                                           audio_url=item['url'],
+                                          performer=performer(item),
                                           title=item['title'].rstrip('\\'))
                    for item in data]
     bot.answerInlineQuery(update.inline_query.id, results=results,
@@ -74,3 +75,13 @@ def collectfeedback(bot, update):
     with open(fout, 'a') as f:
         f.write(date_time + ',' + result_id + ',' + str(user_id) +
                 ',' + chosen_query + '\n')
+
+# Define auxiliar functions
+def performer(item):
+    sequence = ['subsection', 'section', 'category', 'description']
+    chain = ' / '.join(item[key] for key in sequence if item[key])
+    # Telegram api automatically cuts long chains,code below for
+    # cosmetic reasons
+    if len(chain) > 100:
+        chain = chain[:96]+' ...'
+    return chain
