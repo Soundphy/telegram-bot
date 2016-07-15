@@ -31,13 +31,20 @@ def inlinequery(bot, update):
         response = requests.get(
             'https://soundphy-peque.rhcloud.com/v0/search/' + query)
     data = response.json()['results']
-    results = [InlineQueryResultAudio(id=item['identifier'],
+    if not data:
+        troll = 'https://www.myinstants.com/media/sounds/epic.swf_1.mp3'
+        results = [InlineQueryResultAudio(id='0'*40,
+                                    audio_url=troll,
+                                    performer='Try again 😁',
+                                    title='NOT FOUND')]
+    else:
+        results = [InlineQueryResultAudio(id=item['identifier'],
                                     audio_url=item['url'],
                                     performer=performer(item),
                                     title=item['title'].rstrip('\\'))
                                     for item in data]
     bot.answerInlineQuery(update.inline_query.id, results=results,
-                          cache_time=0)
+                          cache_time=0, next_offset=10)
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
