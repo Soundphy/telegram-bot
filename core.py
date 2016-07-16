@@ -51,8 +51,7 @@ def inlinequery(bot, update):
                                     performer=performer(item),
                                     title=item['title'].rstrip('\\'))
                                     for item in data]
-    bot.answerInlineQuery(update.inline_query.id, results=results,
-                          cache_time=0, next_offset=10)
+    bot.answerInlineQuery(update.inline_query.id, results=results)
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
