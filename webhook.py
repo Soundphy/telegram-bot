@@ -7,7 +7,7 @@ import telegram
 from telegram.ext import Updater, ChosenInlineResultHandler
 from telegram.ext import CommandHandler, InlineQueryHandler
 from flask import Flask, request
-from core import helpbot, inlinequery, error, collectfeedback
+from core import helpbot, inlinequery, error, collectfeedback, start
 
 
 app = Flask(__name__)
@@ -23,6 +23,7 @@ bot = telegram.Bot(token=TOKEN)
 updater = Updater(TOKEN)
 dp = updater.dispatcher
 dp.add_handler(CommandHandler("help", helpbot))
+dp.add_handler(CommandHandler("start", start))
 dp.add_handler(InlineQueryHandler(inlinequery))
 dp.add_handler(ChosenInlineResultHandler(collectfeedback))
 dp.add_error_handler(error)

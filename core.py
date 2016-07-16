@@ -21,6 +21,14 @@ logger = logging.getLogger(__name__)
 def helpbot(bot, update):
     bot.sendMessage(update.message.chat_id, text='Help!')
 
+def start(bot, update):
+    text = 'This bot can help you find and share sounds. It works'+\
+    ' automatically, no need to add it anywhere. Simply open any of '+\
+    'your chats and type `@SoundphyBot something` in the message '+\
+    'field. Then tap on a result to send. For example, try typing '+\
+    '`@SoundphyBot Star Wars` here.'''
+    bot.sendMessage(update.message.chat_id, text=text,\
+        parse_mode='Markdown')
 
 def inlinequery(bot, update):
     query = update.inline_query.query.strip()
